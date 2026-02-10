@@ -4,7 +4,7 @@ cask "prbar" do
 
   url "https://github.com/neural-harmonics/prbar/releases/download/v#{version}/PRBar.app.zip"
   name "PRBar"
-  desc "macOS menubar app for GitHub pull request monitoring"
+  desc "Menubar app for GitHub pull request monitoring"
   homepage "https://github.com/neural-harmonics/prbar"
 
   app "PRBar.app"
