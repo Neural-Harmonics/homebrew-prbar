@@ -18,7 +18,7 @@ jobs:
           brew tap neural-harmonics/prbar "file://$GITHUB_WORKSPACE"
 
       - name: Homebrew style
-        run: brew style --cask Casks/prbar.rb
+        run: brew style --cask --tap neural-harmonics/prbar prbar
 
       - name: Homebrew audit
         run: brew audit --cask --online --tap neural-harmonics/prbar prbar
