@@ -1,0 +1,19 @@
+name: Cask CI
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+
+jobs:
+  validate-cask:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Homebrew style
+        run: brew style --cask Casks/prbar.rb
+
+      - name: Homebrew audit
+        run: brew audit --cask --online Casks/prbar.rb
