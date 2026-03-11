@@ -1,0 +1,61 @@
+name: Update Cask
+
+on:
+  repository_dispatch:
+    types: [update-cask]
+  workflow_dispatch:
+    inputs:
+      cask:
+        description: "Cask name (e.g. prbar)"
+        required: true
+        default: "prbar"
+      version:
+        description: "New version (e.g. 0.0.7)"
+        required: true
+      sha256:
+        description: "SHA256 of the zip asset"
+        required: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve inputs
+        run: |
+          if [[ "${{ github.event_name }}" == "repository_dispatch" ]]; then
+            echo "CASK=${{ github.event.client_payload.cask }}"       >> "$GITHUB_ENV"
+            echo "VERSION=${{ github.event.client_payload.version }}" >> "$GITHUB_ENV"
+            echo "SHA256=${{ github.event.client_payload.sha256 }}"   >> "$GITHUB_ENV"
+          else
+            echo "CASK=${{ inputs.cask }}"       >> "$GITHUB_ENV"
+            echo "VERSION=${{ inputs.version }}" >> "$GITHUB_ENV"
+            echo "SHA256=${{ inputs.sha256 }}"   >> "$GITHUB_ENV"
+          fi
+
+      - name: Update cask
+        run: |
+          set -euo pipefail
+          CASK_FILE="Casks/${CASK}.rb"
+          if [[ ! -f "$CASK_FILE" ]]; then
+            echo "::error::Cask file not found: $CASK_FILE"
+            exit 1
+          fi
+          sed -i "s/version \".*\"/version \"${VERSION}\"/" "$CASK_FILE"
+          sed -i "s/sha256 \".*\"/sha256 \"${SHA256}\"/"    "$CASK_FILE"
+          cat "$CASK_FILE"
+
+      - name: Commit and push
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- "Casks/${CASK}.rb"; then
+            echo "::notice::No changes for ${CASK} — already at ${VERSION}"
+            exit 0
+          fi
+          git add "Casks/${CASK}.rb"
+          git commit -m "chore(cask): bump ${CASK} to ${VERSION}"
+          git push

@@ -1,6 +1,6 @@
 cask "prbar" do
-  version "0.0.6"
-  sha256 "ab5f9e21b0403536ac159af3f48c67024c478deb963876880faf80e1d486abff"
+  version "0.0.7"
+  sha256 "a951dd8ffc950ba4ae4b18f1dd2e5775374108d10ad5d1111316d65965907a83"
 
   url "https://github.com/neural-harmonics/prbar/releases/download/v#{version}/PRBar.app.zip"
   name "PRBar"
