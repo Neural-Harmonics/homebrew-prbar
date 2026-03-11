@@ -21,4 +21,6 @@ jobs:
         run: brew style --cask prbar
 
       - name: Homebrew audit
+        env:
+          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: brew audit --cask --online --tap neural-harmonics/prbar prbar
